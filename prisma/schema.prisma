@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Pokemon {
+  id                   Int     @id @default(autoincrement())
+  user                 User @relation(fields: [userId], references: [idUser])
+  userId               Int
+  name                 String  @unique
+  heigth               Int?
+  images               Images[]
+  abilities            Pokemon_Abilities[]
+  price                Float
+}
+
+model Images {
+  id                   Int     @id @default(autoincrement())
+  pokemon              Pokemon @relation(fields: [pokemonId], references: [id])
+  pokemonId            Int
+  url                  String?
+}
+
+model Abilities {
+  id                   Int     @id @default(autoincrement())
+  name                 String
+  effect               String
+  pokemon              Pokemon_Abilities[]
+}
+
+model Pokemon_Abilities {
+  pokemonAbilityId     Int @id @default(autoincrement())
+  pokemon              Pokemon @relation(fields: [pokemonId], references: [id])
+  pokemonId            Int
+  ability              Abilities @relation(fields: [abilityId], references: [id]) 
+  abilityId            Int
+}
+
+model User {
+  idUser               Int @id @default(autoincrement())
+  nameUser             String
+  
+  emailUser            String @unique
+  hash                 String
+  pokemon              Pokemon[]
+  pokemonId            Int
+}
